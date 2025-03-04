@@ -33,7 +33,7 @@ git-commit-chart --host 0.0.0.0 --port 8000 --production
 ![Commits by User View](./screenshots/2.png)
 *Commits by user view*
 
-### Local Installation (Current Method)
+### Local Installation
 
 1. Clone the repository:
 ```bash
@@ -156,10 +156,10 @@ Build and run using Docker:
 
 ```bash
 # Build the image
-docker build -t git-commit-chart .
+podman build --platform linux/amd64,linux/arm64 -t local-git-commit-chart .
 
 # Run the container
-docker run -p 5000:5000 git-commit-chart
+docker run --rm -i -t -p 5000:5000 local-git-commit-chart:latest
 ```
 
 ## Kubernetes Deployment

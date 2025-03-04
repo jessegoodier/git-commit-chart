@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD ["python", "app.py"] 
+CMD ["python", "/app/git_commit_chart/app.py", "--port", "5000", "--host", "0.0.0.0", "--production"] 
