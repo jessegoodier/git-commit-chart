@@ -13,6 +13,15 @@ A web application that visualizes commit history for GitHub repositories using i
 
 ## Installation
 
+```sh
+pip install git-commit-chart
+```
+
+Run:
+```sh
+git-commit-chart --host 0.0.0.0 --port 8000 --production
+```
+
 ### Local Installation (Current Method)
 
 1. Clone the repository:
