@@ -24,7 +24,7 @@ git-commit-chart --host 0.0.0.0 --port 8000 --production
 
 ### Screenshots
 
-![Total Commits View](./screenshots/1.png.png)
+![Total Commits View](./screenshots/1.png)
 *Total commits view*
 
 ![Commits by User View](./screenshots/2.png)
