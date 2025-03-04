@@ -5,9 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Git Commits by User</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
 </head>
 <body>
+    <div class="theme-switch-wrapper">
+        <i class="fas fa-sun icon"></i>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
+            <span class="slider"></span>
+        </label>
+        <i class="fas fa-moon icon"></i>
+    </div>
+
     <div class="container">
         <h1>Git Commits by User</h1>
         <div class="nav-links">
@@ -27,6 +38,9 @@
         let chart = null;
         let currentOwner = '{{ default_owner }}';
         let currentRepo = '{{ default_repo }}';
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', initTheme);
 
         // Check URL parameters on load
         window.onload = function() {
@@ -52,14 +66,12 @@
             }
         }
 
-        // Function to generate a random color
+        // Function to generate a random color with good contrast
         function getRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
+            const hue = Math.floor(Math.random() * 360);
+            const saturation = 70 + Math.random() * 10; // 70-80%
+            const lightness = 45 + Math.random() * 10; // 45-55%
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
         }
 
         async function fetchCommitsByUser() {
@@ -103,6 +115,9 @@
 
         function createChart(data) {
             const ctx = document.getElementById('commitChart').getContext('2d');
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDark ? '#e2e8f0' : '#2d3748';
+            const gridColor = isDark ? '#4a5568' : '#e2e8f0';
             
             if (chart) {
                 chart.destroy();
@@ -117,7 +132,7 @@
                 borderWidth: 1
             }));
 
-            chart = new Chart(ctx, {
+            chart = window.chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: data.dates,
@@ -128,13 +143,15 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Commits by User (Last 30 Days)'
+                            text: 'Commits by User (Last 30 Days)',
+                            color: textColor
                         },
                         legend: {
                             display: true,
                             position: 'top',
                             labels: {
                                 usePointStyle: true,
+                                color: textColor,
                                 generateLabels: function(chart) {
                                     const labels = Chart.defaults.plugins.legend.labels.generateLabels(chart);
                                     labels.forEach(label => {
@@ -147,13 +164,23 @@
                     },
                     scales: {
                         x: {
-                            stacked: true
+                            stacked: true,
+                            grid: {
+                                color: gridColor
+                            },
+                            ticks: {
+                                color: textColor
+                            }
                         },
                         y: {
                             stacked: true,
                             beginAtZero: true,
+                            grid: {
+                                color: gridColor
+                            },
                             ticks: {
-                                stepSize: 1
+                                stepSize: 1,
+                                color: textColor
                             }
                         }
                     }
@@ -187,6 +214,7 @@
             background-repeat: no-repeat;
             background-size: contain;
             margin-right: 8px;
+            filter: var(--icon-filter);
         }
     </style>
 </body>

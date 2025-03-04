@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="git-commit-chart",
-    version="0.1.1",
+    version="0.1.2",
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
@@ -27,12 +27,12 @@ setup(
             "git-commit-chart=git_commit_chart.app:main",
         ],
     },
-    author="Your Name",
-    description="A web application to visualize GitHub repository commit history",
+    author="Jesse Goodier",
+    description="A web application to visualize GitHub repository commit history, written by cursor AI",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     keywords="github, commits, visualization, chart",
-    url="https://github.com/yourusername/git-commit-chart",
+    url="https://github.com/jessegoodier/git-commit-chart",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

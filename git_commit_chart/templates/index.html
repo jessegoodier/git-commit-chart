@@ -5,9 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Git Commit Chart</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
 </head>
 <body>
+    <div class="theme-switch-wrapper">
+        <i class="fas fa-sun icon"></i>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-switch" onchange="toggleTheme()">
+            <span class="slider"></span>
+        </label>
+        <i class="fas fa-moon icon"></i>
+    </div>
+
     <div class="container">
         <h1>Git Commit History Visualization</h1>
         <div class="nav-links">
@@ -27,6 +38,9 @@
         let chart = null;
         let currentOwner = '{{ default_owner }}';
         let currentRepo = '{{ default_repo }}';
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', initTheme);
 
         // Check URL parameters on load
         window.onload = function() {
@@ -93,19 +107,23 @@
 
         function createChart(data) {
             const ctx = document.getElementById('commitChart').getContext('2d');
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDark ? '#e2e8f0' : '#2d3748';
+            const gridColor = isDark ? '#4a5568' : '#e2e8f0';
+            const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
             
             if (chart) {
                 chart.destroy();
             }
 
-            chart = new Chart(ctx, {
+            chart = window.chart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: data.dates,
                     datasets: [{
                         label: 'Commits per Day',
                         data: data.counts,
-                        borderColor: 'rgb(75, 192, 192)',
+                        borderColor: accentColor,
                         tension: 0.1,
                         fill: false
                     }]
@@ -115,14 +133,27 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Commit History (Last 30 Days)'
+                            text: 'Commit History (Last 30 Days)',
+                            color: textColor
                         }
                     },
                     scales: {
+                        x: {
+                            grid: {
+                                color: gridColor
+                            },
+                            ticks: {
+                                color: textColor
+                            }
+                        },
                         y: {
                             beginAtZero: true,
+                            grid: {
+                                color: gridColor
+                            },
                             ticks: {
-                                stepSize: 1
+                                stepSize: 1,
+                                color: textColor
                             }
                         }
                     }
