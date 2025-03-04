@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="git-commit-chart",
-    version="0.1.3",
+    version="0.1.4",
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
@@ -16,6 +16,7 @@ setup(
         "dev": [
             "pytest>=7.0.0",
             "pytest-cov>=4.1.0",
+            "pytest-timeout>=2.2.0",
             "black>=22.0.0",
             "flake8>=4.0.0",
             "build>=0.10.0",

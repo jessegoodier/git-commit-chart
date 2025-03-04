@@ -96,34 +96,46 @@ def by_user():
 
 @app.route('/get_commits', methods=['POST'])
 def get_commits():
-    data = request.json
-    owner = data.get('owner', DEFAULT_OWNER)
-    repo = data.get('repo', DEFAULT_REPO)
+    data = request.json or {}
+    owner = data.get('owner')
+    repo = data.get('repo')
     
     if not owner or not repo:
         return jsonify({'error': 'Owner and repository name are required'}), 400
     
     commit_data = get_commit_history(owner, repo)
+    if 'error' in commit_data:
+        return jsonify(commit_data), 403 if '403' in str(commit_data['error']) else 500
     return jsonify(commit_data)
 
 @app.route('/get_commits_by_user', methods=['POST'])
 def get_commits_by_user_route():
-    data = request.json
-    owner = data.get('owner', DEFAULT_OWNER)
-    repo = data.get('repo', DEFAULT_REPO)
+    data = request.json or {}
+    owner = data.get('owner')
+    repo = data.get('repo')
     
     if not owner or not repo:
         return jsonify({'error': 'Owner and repository name are required'}), 400
     
     commit_data = get_commits_by_user(owner, repo)
+    if 'error' in commit_data:
+        return jsonify(commit_data), 403 if '403' in str(commit_data['error']) else 500
     return jsonify(commit_data)
 
 @click.command()
 @click.option('--port', default=5000, help='Port to run the application on')
 @click.option('--host', default='127.0.0.1', help='Host to run the application on')
 @click.option('--production/--development', default=False, help='Run in production mode')
-def main(port, host, production):
+@click.option('--test-mode', is_flag=True, hidden=True, help='Run in test mode (no server)')
+def main(port, host, production, test_mode):
     """Run the Git Commit Chart application."""
+    if test_mode:
+        if production:
+            click.echo(f"Running in production mode on http://{host}:{port}")
+        else:
+            click.echo(f"Running in development mode on http://{host}:{port}")
+        return
+        
     if production:
         from waitress import serve
         click.echo(f"Running in production mode on http://{host}:{port}")
