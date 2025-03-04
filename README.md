@@ -1,4 +1,6 @@
-# Git Commit Chart
+# Git Commit Chart (AI written)
+
+99% AI (cursor) without any actual programming.
 
 A web application that visualizes commit history for GitHub repositories using interactive charts. The application shows commit patterns over the last 30 days of any public GitHub repository, with both overall commit trends and per-user contribution breakdowns.
 
@@ -10,6 +12,7 @@ A web application that visualizes commit history for GitHub repositories using i
 - Responsive design that works on all devices
 - Easy navigation between different views
 - URL sharing support for specific repositories
+- Dark mode by default
 
 ## Installation
 
