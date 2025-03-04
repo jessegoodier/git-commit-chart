@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: git-commit-chart
+  labels:
+    app: git-commit-chart
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: git-commit-chart
+  template:
+    metadata:
+      labels:
+        app: git-commit-chart
+    spec:
+      containers:
+      - name: git-commit-chart
+        image: git-commit-chart:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        env:
+        - name: FLASK_ENV
+          value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: git-commit-chart
+spec:
+  selector:
+    app: git-commit-chart
+  ports:
+  - port: 5000
+    targetPort: 5000
+    protocol: TCP
+  type: LoadBalancer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: git-commit-chart
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: git-commit-chart
+            port:
+              number: 5000 
